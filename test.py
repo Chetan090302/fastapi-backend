@@ -1,8 +1,7 @@
 import ollama
 import asyncio
-from fastapi import FastAPI,APIRouter,Request
+from fastapi import FastAPI,APIRouter
 from pydantic import BaseModel
-import json
 from fastapi.responses import JSONResponse,StreamingResponse
 
 class Input(BaseModel):
@@ -23,8 +22,8 @@ async def chat(input:Input):
     return {"response": response['message']['content']}
 
 @app.post("/test")
-async def testing_method(request:Request):
-    input_data = await request.json()
+async def testing_method(input: Input):
+    input_data = input.model_dump()
     return StreamingResponse(
         fake_llm_call(input_data),
         media_type="text/event-stream",
